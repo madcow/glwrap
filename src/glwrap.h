@@ -17,8 +17,11 @@
 #error gl.h included before glwrap.h
 #endif
 
-// Initialize OpenGL
-int glInit(void);
+// ====================================
+// GLWRAP FUNCTIONS
+// ====================================
+
+int glInit(void); // Initialize OpenGL
 
 #ifndef GLAPI
 #define GLAPI extern
@@ -36,7 +39,10 @@ int glInit(void);
 #define APIENTRYP APIENTRY *
 #endif
 
-// Types
+// ====================================
+// OPENGL TYPES
+// ====================================
+
 #include "external/khrplatform.h"
 typedef unsigned int GLenum;
 typedef unsigned char GLboolean;
@@ -81,7 +87,10 @@ typedef unsigned short GLhalfNV;
 typedef GLintptr GLvdpauSurfaceNV;
 typedef void (APIENTRY *GLVULKANPROCNV)(void);
 
-// Constants
+// ====================================
+// OPENGL CONSTANTS
+// ====================================
+
 #define GL_DEPTH_BUFFER_BIT 0x00000100
 #define GL_STENCIL_BUFFER_BIT 0x00000400
 #define GL_COLOR_BUFFER_BIT 0x00004000
@@ -330,8 +339,10 @@ typedef void (APIENTRY *GLVULKANPROCNV)(void);
 #define GL_STENCIL_BACK_VALUE_MASK 0x8CA4
 #define GL_STENCIL_BACK_WRITEMASK 0x8CA5
 
-// Function pointer signatures
-// TODO: Names for function arguments should be stripped
+// ====================================
+// OPENGL FUNCTION POINTER SIGNATURES
+// ====================================
+
 typedef const GLubyte * (APIENTRYP PFNGLGETSTRINGPROC)(GLenum name);
 typedef GLboolean (APIENTRYP PFNGLISBUFFERPROC)(GLuint buffer);
 typedef GLboolean (APIENTRYP PFNGLISENABLEDPROC)(GLenum cap);
@@ -455,7 +466,10 @@ typedef void (APIENTRYP PFNGLVERTEXATTRIB4FVPROC)(GLuint index, const GLfloat *v
 typedef void (APIENTRYP PFNGLVERTEXATTRIBPOINTERPROC)(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer);
 typedef void (APIENTRYP PFNGLVIEWPORTPROC)(GLint x, GLint y, GLsizei width, GLsizei height);
 
-// Actual function declarations
+// ====================================
+// OPENGL FUNCTION DECLARATIONS
+// ====================================
+
 GLAPI PFNGLACTIVETEXTUREPROC glActiveTexture_ptr;
 GLAPI PFNGLATTACHSHADERPROC glAttachShader_ptr;
 GLAPI PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation_ptr;
@@ -579,7 +593,10 @@ GLAPI PFNGLVERTEXATTRIB4FVPROC glVertexAttrib4fv_ptr;
 GLAPI PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer_ptr;
 GLAPI PFNGLVIEWPORTPROC glViewport_ptr;
 
-// Mappings to internal function pointers
+// ====================================
+// OPENGL MACRO MAPPINGS TO FUNCTIONS
+// ====================================
+
 #define glActiveTexture glActiveTexture_ptr
 #define glAttachShader glAttachShader_ptr
 #define glBindAttribLocation glBindAttribLocation_ptr
