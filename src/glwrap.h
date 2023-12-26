@@ -15,35 +15,48 @@
 #define __gl_h_
 #else
 #error gl.h included before glwrap.h
-#endif
+#endif // __gl_h_
 
 // ====================================
 // GLWRAP FUNCTIONS
 // ====================================
 
-int glInit(void); // Initialize OpenGL
+// Call glInit after a context was created
+// and made current. This will then load all
+// function pointers needed for OpenGL and
+// return 0 on success or -1 on error.
+
+int glInit(void);
 
 #ifndef GLAPI
 #define GLAPI extern
-#endif
+#endif // GLAPI
 
 #ifndef APIENTRY
 #ifndef _WIN32
 #define APIENTRY
 #else
 #define APIENTRY __stdcall
-#endif
-#endif
+#endif // _WIN32
+#endif // APIENTRY
 
 #ifndef APIENTRYP
 #define APIENTRYP APIENTRY *
-#endif
+#endif // APIENTRYP
+
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
 
 // ====================================
 // OPENGL TYPES
 // ====================================
 
+// Khronos Group header needed to ensure
+// the correct type sizes for different
+// processor architectures and systems.
 #include "external/khrplatform.h"
+
 typedef unsigned int GLenum;
 typedef unsigned char GLboolean;
 typedef unsigned int GLbitfield;
@@ -719,5 +732,9 @@ GLAPI PFNGLVIEWPORTPROC glViewport_ptr;
 #define glVertexAttrib4fv glVertexAttrib4fv_ptr
 #define glVertexAttribPointer glVertexAttribPointer_ptr
 #define glViewport glViewport_ptr
+
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
 #endif // MAD_GLWRAP_H
