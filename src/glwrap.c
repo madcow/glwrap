@@ -1,6 +1,153 @@
 #include "glwrap.h"
 #include <stddef.h>
 
+#ifdef _WIN32
+#define WIN32_LEAN_AND_MEAN
+#undef APIENTRY
+#include <windows.h>
+// Use Windows WGL implementation of GetProcAddress()
+#define GetAddress(name) wglGetProcAddress((LPCSTR)name)
+#else
+#include <GL/glx.h>
+// Use Linux GLX implementation of GetProcAddress()
+extern void (*glXGetProcAddressARB(const GLubyte *procName))();
+#define GetAddress(name) (*glXGetProcAddressARB)((const GLubyte*) name)
+#endif
+
+// Load function and check for driver dependent error return values
+#define GetFunc(type, name) name##_ptr = (type) GetAddress(#name); \
+if (name == (type) 0 || name == (type) -1 || name == (type) 1 || \
+    name == (type) 2 || name == (type) 3) \
+	return -1;
+
+int glInit(void)
+{
+	GetFunc(PFNGLACTIVETEXTUREPROC, glActiveTexture);
+	GetFunc(PFNGLATTACHSHADERPROC, glAttachShader);
+	GetFunc(PFNGLBINDATTRIBLOCATIONPROC, glBindAttribLocation);
+	GetFunc(PFNGLBINDBUFFERPROC, glBindBuffer);
+	GetFunc(PFNGLBINDTEXTUREPROC, glBindTexture);
+	GetFunc(PFNGLBLENDCOLORPROC, glBlendColor);
+	GetFunc(PFNGLBLENDEQUATIONPROC, glBlendEquation);
+	GetFunc(PFNGLBLENDEQUATIONSEPARATEPROC, glBlendEquationSeparate);
+	GetFunc(PFNGLBLENDFUNCPROC, glBlendFunc);
+	GetFunc(PFNGLBLENDFUNCSEPARATEPROC, glBlendFuncSeparate);
+	GetFunc(PFNGLBUFFERDATAPROC, glBufferData);
+	GetFunc(PFNGLBUFFERSUBDATAPROC, glBufferSubData);
+	GetFunc(PFNGLCLEARCOLORPROC, glClearColor);
+	GetFunc(PFNGLCLEARPROC, glClear);
+	GetFunc(PFNGLCLEARSTENCILPROC, glClearStencil);
+	GetFunc(PFNGLCOLORMASKPROC, glColorMask);
+	GetFunc(PFNGLCOMPILESHADERPROC, glCompileShader);
+	GetFunc(PFNGLCOMPRESSEDTEXIMAGE2DPROC, glCompressedTexImage2D);
+	GetFunc(PFNGLCOMPRESSEDTEXSUBIMAGE2DPROC, glCompressedTexSubImage2D);
+	GetFunc(PFNGLCOPYTEXIMAGE2DPROC, glCopyTexImage2D);
+	GetFunc(PFNGLCOPYTEXSUBIMAGE2DPROC, glCopyTexSubImage2D);
+	GetFunc(PFNGLCREATEPROGRAMPROC, glCreateProgram);
+	GetFunc(PFNGLCREATESHADERPROC, glCreateShader);
+	GetFunc(PFNGLCULLFACEPROC, glCullFace);
+	GetFunc(PFNGLDELETEBUFFERSPROC, glDeleteBuffers);
+	GetFunc(PFNGLDELETEPROGRAMPROC, glDeleteProgram);
+	GetFunc(PFNGLDELETESHADERPROC, glDeleteShader);
+	GetFunc(PFNGLDELETETEXTURESPROC, glDeleteTextures);
+	GetFunc(PFNGLDEPTHFUNCPROC, glDepthFunc);
+	GetFunc(PFNGLDEPTHMASKPROC, glDepthMask);
+	GetFunc(PFNGLDETACHSHADERPROC, glDetachShader);
+	GetFunc(PFNGLDISABLEPROC, glDisable);
+	GetFunc(PFNGLDISABLEVERTEXATTRIBARRAYPROC, glDisableVertexAttribArray);
+	GetFunc(PFNGLDRAWARRAYSPROC, glDrawArrays);
+	GetFunc(PFNGLDRAWELEMENTSPROC, glDrawElements);
+	GetFunc(PFNGLENABLEPROC, glEnable);
+	GetFunc(PFNGLENABLEVERTEXATTRIBARRAYPROC, glEnableVertexAttribArray);
+	GetFunc(PFNGLFINISHPROC, glFinish);
+	GetFunc(PFNGLFLUSHPROC, glFlush);
+	GetFunc(PFNGLFRONTFACEPROC, glFrontFace);
+	GetFunc(PFNGLGENBUFFERSPROC, glGenBuffers);
+	GetFunc(PFNGLGENTEXTURESPROC, glGenTextures);
+	GetFunc(PFNGLGETACTIVEATTRIBPROC, glGetActiveAttrib);
+	GetFunc(PFNGLGETACTIVEUNIFORMPROC, glGetActiveUniform);
+	GetFunc(PFNGLGETATTACHEDSHADERSPROC, glGetAttachedShaders);
+	GetFunc(PFNGLGETATTRIBLOCATIONPROC, glGetAttribLocation);
+	GetFunc(PFNGLGETBOOLEANVPROC, glGetBooleanv);
+	GetFunc(PFNGLGETBUFFERPARAMETERIVPROC, glGetBufferParameteriv);
+	GetFunc(PFNGLGETERRORPROC, glGetError);
+	GetFunc(PFNGLGETFLOATVPROC, glGetFloatv);
+	GetFunc(PFNGLGETINTEGERVPROC, glGetIntegerv);
+	GetFunc(PFNGLGETPROGRAMINFOLOGPROC, glGetProgramInfoLog);
+	GetFunc(PFNGLGETPROGRAMIVPROC, glGetProgramiv);
+	GetFunc(PFNGLGETSHADERINFOLOGPROC, glGetShaderInfoLog);
+	GetFunc(PFNGLGETSHADERIVPROC, glGetShaderiv);
+	GetFunc(PFNGLGETSHADERSOURCEPROC, glGetShaderSource);
+	GetFunc(PFNGLGETSTRINGPROC, glGetString);
+	GetFunc(PFNGLGETTEXPARAMETERFVPROC, glGetTexParameterfv);
+	GetFunc(PFNGLGETTEXPARAMETERIVPROC, glGetTexParameteriv);
+	GetFunc(PFNGLGETUNIFORMFVPROC, glGetUniformfv);
+	GetFunc(PFNGLGETUNIFORMIVPROC, glGetUniformiv);
+	GetFunc(PFNGLGETUNIFORMLOCATIONPROC, glGetUniformLocation);
+	GetFunc(PFNGLGETVERTEXATTRIBFVPROC, glGetVertexAttribfv);
+	GetFunc(PFNGLGETVERTEXATTRIBIVPROC, glGetVertexAttribiv);
+	GetFunc(PFNGLGETVERTEXATTRIBPOINTERVPROC, glGetVertexAttribPointerv);
+	GetFunc(PFNGLHINTPROC, glHint);
+	GetFunc(PFNGLISBUFFERPROC, glIsBuffer);
+	GetFunc(PFNGLISENABLEDPROC, glIsEnabled);
+	GetFunc(PFNGLISPROGRAMPROC, glIsProgram);
+	GetFunc(PFNGLISSHADERPROC, glIsShader);
+	GetFunc(PFNGLISTEXTUREPROC, glIsTexture);
+	GetFunc(PFNGLLINEWIDTHPROC, glLineWidth);
+	GetFunc(PFNGLLINKPROGRAMPROC, glLinkProgram);
+	GetFunc(PFNGLPIXELSTOREIPROC, glPixelStorei);
+	GetFunc(PFNGLPOLYGONOFFSETPROC, glPolygonOffset);
+	GetFunc(PFNGLREADPIXELSPROC, glReadPixels);
+	GetFunc(PFNGLSAMPLECOVERAGEPROC, glSampleCoverage);
+	GetFunc(PFNGLSCISSORPROC, glScissor);
+	GetFunc(PFNGLSHADERSOURCEPROC, glShaderSource);
+	GetFunc(PFNGLSTENCILFUNCPROC, glStencilFunc);
+	GetFunc(PFNGLSTENCILFUNCSEPARATEPROC, glStencilFuncSeparate);
+	GetFunc(PFNGLSTENCILMASKPROC, glStencilMask);
+	GetFunc(PFNGLSTENCILMASKSEPARATEPROC, glStencilMaskSeparate);
+	GetFunc(PFNGLSTENCILOPPROC, glStencilOp);
+	GetFunc(PFNGLSTENCILOPSEPARATEPROC, glStencilOpSeparate);
+	GetFunc(PFNGLTEXIMAGE2DPROC, glTexImage2D);
+	GetFunc(PFNGLTEXPARAMETERFPROC, glTexParameterf);
+	GetFunc(PFNGLTEXPARAMETERFVPROC, glTexParameterfv);
+	GetFunc(PFNGLTEXPARAMETERIPROC, glTexParameteri);
+	GetFunc(PFNGLTEXPARAMETERIVPROC, glTexParameteriv);
+	GetFunc(PFNGLTEXSUBIMAGE2DPROC, glTexSubImage2D);
+	GetFunc(PFNGLUNIFORM1FPROC, glUniform1f);
+	GetFunc(PFNGLUNIFORM1FVPROC, glUniform1fv);
+	GetFunc(PFNGLUNIFORM1IPROC, glUniform1i);
+	GetFunc(PFNGLUNIFORM1IVPROC, glUniform1iv);
+	GetFunc(PFNGLUNIFORM2FPROC, glUniform2f);
+	GetFunc(PFNGLUNIFORM2FVPROC, glUniform2fv);
+	GetFunc(PFNGLUNIFORM2IPROC, glUniform2i);
+	GetFunc(PFNGLUNIFORM2IVPROC, glUniform2iv);
+	GetFunc(PFNGLUNIFORM3FPROC, glUniform3f);
+	GetFunc(PFNGLUNIFORM3FVPROC, glUniform3fv);
+	GetFunc(PFNGLUNIFORM3IPROC, glUniform3i);
+	GetFunc(PFNGLUNIFORM3IVPROC, glUniform3iv);
+	GetFunc(PFNGLUNIFORM4FPROC, glUniform4f);
+	GetFunc(PFNGLUNIFORM4FVPROC, glUniform4fv);
+	GetFunc(PFNGLUNIFORM4IPROC, glUniform4i);
+	GetFunc(PFNGLUNIFORM4IVPROC, glUniform4iv);
+	GetFunc(PFNGLUNIFORMMATRIX2FVPROC, glUniformMatrix2fv);
+	GetFunc(PFNGLUNIFORMMATRIX3FVPROC, glUniformMatrix3fv);
+	GetFunc(PFNGLUNIFORMMATRIX4FVPROC, glUniformMatrix4fv);
+	GetFunc(PFNGLUSEPROGRAMPROC, glUseProgram);
+	GetFunc(PFNGLVALIDATEPROGRAMPROC, glValidateProgram);
+	GetFunc(PFNGLVERTEXATTRIB1FPROC, glVertexAttrib1f);
+	GetFunc(PFNGLVERTEXATTRIB1FVPROC, glVertexAttrib1fv);
+	GetFunc(PFNGLVERTEXATTRIB2FPROC, glVertexAttrib2f);
+	GetFunc(PFNGLVERTEXATTRIB2FVPROC, glVertexAttrib2fv);
+	GetFunc(PFNGLVERTEXATTRIB3FPROC, glVertexAttrib3f);
+	GetFunc(PFNGLVERTEXATTRIB3FVPROC, glVertexAttrib3fv);
+	GetFunc(PFNGLVERTEXATTRIB4FPROC, glVertexAttrib4f);
+	GetFunc(PFNGLVERTEXATTRIB4FVPROC, glVertexAttrib4fv);
+	GetFunc(PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer);
+	GetFunc(PFNGLVIEWPORTPROC, glViewport);
+
+	return 0;
+}
+
 PFNGLACTIVETEXTUREPROC glActiveTexture_ptr = NULL;
 PFNGLATTACHSHADERPROC glAttachShader_ptr = NULL;
 PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation_ptr = NULL;

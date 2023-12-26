@@ -17,6 +17,9 @@
 #error gl.h included before glwrap.h
 #endif
 
+// Initialize OpenGL
+int glInit(void);
+
 #ifndef GLAPI
 #define GLAPI extern
 #endif
@@ -328,6 +331,7 @@ typedef void (APIENTRY *GLVULKANPROCNV)(void);
 #define GL_STENCIL_BACK_WRITEMASK 0x8CA5
 
 // Function pointer signatures
+// TODO: Names for function arguments should be stripped
 typedef const GLubyte * (APIENTRYP PFNGLGETSTRINGPROC)(GLenum name);
 typedef GLboolean (APIENTRYP PFNGLISBUFFERPROC)(GLuint buffer);
 typedef GLboolean (APIENTRYP PFNGLISENABLEDPROC)(GLenum cap);
