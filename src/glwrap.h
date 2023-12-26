@@ -3,30 +3,24 @@
 
 // OpenGL types and function retrieval
 // Written by Leon Krieg <info@madcow.dev>
-//
-// Load the GLES subset of the OpenGL2.0 specification which
-// gives us the largest compatibility and allows us to work
-// with the modern shader pipeline (vertex/fragment only).
-//
+// Based on the OpenGL documentation by Khronos Group
+
+// Loads the GLES subset of the OpenGL2.0 specification which
+// gives us the widest compatibility and still allows us to
+// work with the modern shader pipeline (vertex and fragment).
 // The engine will never run on MacOS so no reason to handle
 // anything related to the Apple OpenGL implementation here.
+
+// TODO: More robust error handling
+// TODO: GetProcAddress() fallback
+// TODO: Vendor extension loading
+// TODO: Basic GLX/WGL windowing?
 
 #ifndef __gl_h_
 #define __gl_h_
 #else
 #error gl.h included before glwrap.h
 #endif // __gl_h_
-
-// ====================================
-// GLWRAP FUNCTIONS
-// ====================================
-
-// Call glInit after a context was created
-// and made current. This will then load all
-// function pointers needed for OpenGL and
-// return 0 on success or -1 on error.
-
-int glInit(void);
 
 #ifndef GLAPI
 #define GLAPI extern
@@ -49,12 +43,24 @@ extern "C" {
 #endif // __cplusplus
 
 // ====================================
+// GLWRAP FUNCTIONS
+// ====================================
+
+// Call glInit after a context was created
+// and made current. This will then load all
+// function pointers needed for OpenGL and
+// return 0 on success or -1 on error.
+
+int glInit(void);
+
+// ====================================
 // OPENGL TYPES
 // ====================================
 
 // Khronos Group header needed to ensure
 // the correct type sizes for different
 // processor architectures and systems.
+
 #include "external/khrplatform.h"
 
 typedef unsigned int GLenum;
