@@ -16,8 +16,9 @@ extern void (*glXGetProcAddressARB(const GLubyte *procName))();
 
 // Load function and check for driver dependent error return values
 #define GetFunc(type, name) name##_ptr = (type) GetAddress(#name); \
-if (name == (type) 0 || name == (type) -1 || name == (type) 1 || \
-    name == (type) 2 || name == (type) 3) \
+if (name##_ptr == (type) 0 || name##_ptr == (type) 1 || \
+    name##_ptr == (type) 2 || name##_ptr == (type) 3 || \
+    name##_ptr == (type) -1) \
 	return -1;
 
 int glInit(void)
